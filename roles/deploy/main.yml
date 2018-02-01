@@ -1,0 +1,10 @@
+---
+- name: copy service files
+  copy: "src={{service}} dest=/opt/ owner=vagrant group=vagrant mode=0755"
+
+- name: Copy Upstart configuration
+  template: "src=panda.upstart.j2 dest=/etc/init/{{service}}.conf"
+
+- name: Validating that server is running
+  service: "name={{service}} state=restarted"
+

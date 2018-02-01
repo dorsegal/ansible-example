@@ -1,0 +1,7 @@
+---
+- name: Install dependencies
+  become: yes
+  apt: pkg=python-pip state=installed
+
+- name: install flask with pip
+  pip: name=flask
