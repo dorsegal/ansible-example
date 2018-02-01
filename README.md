@@ -1,73 +1,40 @@
-# BigPanda DevOps Exercise
-#### INTRO
-Good morning, Mr. Panda. Your mission, should you choose to accept it, involves the development and deployment of two nanoservices.
-Please read the following instructions **carefully** before starting to implement your mission, you don't want to miss any important instruction, especially those in [General Guidelines](#general-guidelines)
-
-#### Get your environment ready
+Get your environment ready
+---
 You'll need a linux machine with the ability to run vms.
 
 1. Make sure you have python 2.7 installed. (Ubuntu 14.04 is highly recommended).
 1. Install Ansible (version 2.1).
 1. Install Vagrant.
 1. Install VirtualBox.
-1. Mirror this git repo using the instructions [here](https://help.github.com/articles/duplicating-a-repository). Then clone it locally. (**Please DO NOT fork the repo**)
 1. Run `vagrant up base` and make sure you can ssh into the machine using `vagrant ssh base`.
-1. Inside the vm execute `nodejs /tmp/bamboo-app/bamboo.js`.
-1. Open your browser, go to <http://localhost:8080>, you should get some information about how much we love bamboo.
 
-Important note: the infrastracture should work out of the box. There's no hidden part of the excersice in which you need to debug vagrant/virtualbox. If you expirience any issue, please refer to [Problems](#problems)
+Developing
+---
 
-#### Ready for action?
-Great.  
-Your project is simple, as a DevOps panda you need to have the ability to develop nanoservices and create a mechanism for deploying them.  
-Below, you can find the description of your tasks.
+Copy `example` role and rename `example` to your service name.
+Add files under `files/your_service`
+make sure main `.py` file is in the same name of you service.
+ex. if you service called `panda` then python script should be `panda.py`
 
-###### NodeJS/Python services
-Create two basic NodeJs or Python services, the first is img-panda which should serve static files from a directory called `resources`. The directory should contain a random number of files. You may use any image that you like, as long as there is a panda over there. The service should return a *random* image on every GET request. 
+next add your service to ansible script by adding this line in `base.yml`
+`- { role: your_service, tags: your_service }`
 
-The second service shall be called smart-panda, and should just maintain a counter of the amount of POST requests it served, and return it on every GET request it gets.
-A sample NodeJS service named bamboo-app already exists  [here](roles/bamboo/files/bamboo-app)
+Deployment
+---
 
-###### Deployment
-Create an ansible role for each of the services. The role should install the service, **run it** and make sure it's ready to be used in **production** (see [General Guidelines](#general-guidelines)). 
-A sample role for bamboo-app already exists for your convenience.  (Please note: samples are not full, and do not contain all relevant the details, you're expected to improve them, and add missing tasks).
-We understand there might be a short service downtime when re-deploying a service, that’s fine.
+To deploy services simply run this command to deploy all services: <br/>
+`ansible-playbook base.yml -i dev/hosts`
 
-###### Wrapper
-This part is a **BONUS** part, if you find this exercise simple and short, feel free to do it.  
-Create a simple utility for deploying both services. Your utility should support deploying a single service, or all of them.  
-Please make sure you have a decent `--help` in your script.
-
-#### Deliverables
-A GitHub Pull-Request to **YOUR DUPLICATED REPO**, containing:  
-
-1. The code for both img-panda and smart-panda.
-1. Ansible roles which takes care of provisioning both services on a VM called base.
-1. Modified base.yml which install ONLY the newly written services on the base VM.
-1. **BONUS** A wrapper script on top of ansible-playbook which deploys the latest version of those services.
-
-PLEASE make sure your Pull Request contains all the requirments above, and doesn't contain any code you didn't change.
-
-The Pull-Request should contain a short description of the roles you created, and any other comment you’d like us to know of.
-
-#### General Guidelines
-Your code should be as simple as possible, yet well documented and robust.  
-Spend some time on designing your solution. 
-Think about operational use cases from the real world. Few examples:
-
-1. Can you run the playbook multiple times without any problem?
-1. What happens if a service crashes?
-1. How much effort will it take to create a new service? D.R.Y!
+if you want specific service just add `-t your_service`: <br/>
+`ansible-playbook base.yml -i dev/hosts -t your_service`
 
 
-#### Problems
-The one and only reason we're using VirtualBox and Vagrant is simplicity and fast bring up of your environment.  
-However, environment issues might happen due to various reasons we can't control.  
-If, for any reason, you experience issues with Vagrant or VirtualBox which you can't solve in 5 minute of work, please do the following:
-1. Avoid any VirtualBox or Vagrant work.
-1. Create a new Ubuntu VM on your own.
-1. Write the two services detailed in [NodeJS/Python Services](#nodejspython-services)
-1. Write the roles detailed in [Deployment](#deployment)
-1. In the [Deliverables](#Deliverables) part, assume `base.yml` will run locally on the VM, and modify it accordingly.
+Usage
+---
 
-Bottom line - follow all the instruction in this document, but assume you're provisioning `localhost` machine.
+###img-panda 
+Open your browser, go to <http://localhost:8080> and you will get random pandas on your screen.
+
+###smart-panda
+Open your browser, go to <http://localhost:8090> and you will the number of time you did POST to <http://localhost:8090> <br/>
+To test it run `curl -X POST localhost:8090` 

@@ -6,9 +6,13 @@
     - name: Set hostname
       hostname: name={{inventory_hostname}}
 
-- name: Base bamboo service
+
+
+# Add here new services (please read REAME file)
+- name: Deloy Panda
   hosts: base
   become: yes
   roles:
-    - { role: nodejs, tags: nodejs }
-    - { role: bamboo, tags: bamboo }
+    - { role: flask, tags: smart-panda,img-panda }
+    - { role: smart-panda, tags: smart-panda }
+    - { role: img-panda, tags: img-panda }

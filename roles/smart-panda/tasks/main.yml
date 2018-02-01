@@ -1,0 +1,13 @@
+---
+
+- name: set service name
+  set_fact:
+    service: "{{role_path|basename}}"
+
+- name: set port number
+  set_fact:
+    port: 8090
+
+- include: ../deploy/main.yml
+
+

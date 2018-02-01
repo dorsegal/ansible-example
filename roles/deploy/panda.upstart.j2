@@ -1,0 +1,11 @@
+description "{{service}}"
+
+start on (filesystem)
+stop on runlevel [016]
+
+respawn
+setuid vagrant
+setgid vagrant
+chdir /opt/{{service}}
+
+exec bash -c 'FLASK_APP=/opt/{{service}}/{{service}}.py flask run --host=0.0.0.0 -p {{port}}'
